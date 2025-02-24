@@ -29,8 +29,8 @@ public class ServerThread implements Runnable {
                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))
         ){
 
-            if(cacheMap.containsKey(url)) {
-                sendResponse(out,cacheMap.get(url),true);
+            if(cacheMap.containsKey(url.getHost() + url.getPath())) {
+                sendResponse(out,cacheMap.get(url.getHost() + url.getPath()),true);
             }
 
             String s = in.readLine();
