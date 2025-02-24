@@ -6,16 +6,15 @@ import java.io.InputStreamReader;
 import java.net.*;
 
 public class ClientProxy {
-    private final String url;
+    private final URL url;
 
-    public ClientProxy(String url) {
+    public ClientProxy(URL url) {
         this.url = url;
     }
 
     public String call() {
         try {
-            URL siteUrl = new URI(url).toURL();
-            HttpURLConnection urlConnection = (HttpURLConnection) siteUrl.openConnection();
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             ) {
                 String line;
@@ -27,8 +26,6 @@ public class ClientProxy {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }

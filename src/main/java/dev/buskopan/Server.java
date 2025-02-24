@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.concurrent.*;
 
@@ -23,7 +24,7 @@ public class Server {
         threadPool = Executors.newCachedThreadPool();
     }
 
-    public void start(String url) {
+    public void start(URL url) {
         System.out.println("Rodando server na porta " + port);
         try {
             socket = new ServerSocket(port);

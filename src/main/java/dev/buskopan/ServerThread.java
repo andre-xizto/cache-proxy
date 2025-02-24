@@ -5,15 +5,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.URL;
 import java.util.Map;
 
 public class ServerThread implements Runnable {
 
     private final Socket client;
-    private final String url;
+    private final URL url;
     private final Map<String, String> cacheMap;
 
-    public ServerThread(Socket client, String url, Map<String,String> cache) {
+    public ServerThread(Socket client, URL url, Map<String,String> cache) {
         this.url = url;
         this.client = client;
         this.cacheMap = cache;
@@ -35,7 +36,7 @@ public class ServerThread implements Runnable {
             String s = in.readLine();
             System.out.println(s);
 
-            String response = cacheMap.computeIfAbsent(url, v -> new ClientProxy(url).call());
+            String response = cacheMap.computeIfAbsent(url.getHost() + url.getPath(), v -> new ClientProxy(url).call());
 
             sendResponse(out, response,false);
         } catch (IOException e) {
