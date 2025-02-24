@@ -7,8 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class Server {
     private ServerSocket socket;
@@ -16,7 +15,7 @@ public class Server {
     private PrintWriter out;
     private BufferedReader in;
     private final int port;
-    private final HashMap<String, Object> cacheMap = new HashMap<>();
+    private final ConcurrentHashMap<String, String> cacheMap = new ConcurrentHashMap<>();
     private final ExecutorService threadPool;
 
     public Server(int port) {
@@ -29,7 +28,7 @@ public class Server {
         try {
             socket = new ServerSocket(port);
             while (true) {
-                threadPool.submit(new ServerThread(socket.accept(), url));
+                threadPool.submit(new ServerThread(socket.accept(), url, cacheMap));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
