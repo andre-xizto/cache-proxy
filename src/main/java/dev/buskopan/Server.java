@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
     private ServerSocket socket;
@@ -15,35 +17,20 @@ public class Server {
     private BufferedReader in;
     private final int port;
     private final HashMap<String, Object> cacheMap = new HashMap<>();
+    private final ExecutorService threadPool;
 
     public Server(int port) {
         this.port = port;
-    }
-
-    public Server() {
-        this.port = 3000;
+        threadPool = Executors.newCachedThreadPool();
     }
 
     public void start(String url) {
         System.out.println("Rodando server na porta " + port);
         try {
             socket = new ServerSocket(port);
-            client = socket.accept();
-            System.out.println("Conexão ok!" + " proxy para: " + url);
-            out = new PrintWriter(client.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-
-            String s = in.readLine();
-
-            System.out.println(s);
-            String response = "OK!";
-
-            out.println("HTTP/1.1 200 OK");
-            out.println("Content-Type: plain/text");
-            out.println("Content-Length: " + response.length());
-            out.println();
-            out.println(response);
-
+            while (true) {
+                threadPool.submit(new ServerThread(socket.accept(), url));
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
